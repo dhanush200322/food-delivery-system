@@ -1,4 +1,5 @@
 import prisma from '../lib/prisma';
+import { Prisma } from '@prisma/client';
 
 export const getFavorites = async (userId: string) => {
   const favorites = await prisma.favorite.findMany({
@@ -26,7 +27,26 @@ export const getFavorites = async (userId: string) => {
     }
   });
 
-  const formattedFavorites = favorites.map(fav => ({
+  type FavoritePayload = Prisma.FavoriteGetPayload<{
+    include: {
+      food: {
+        select: {
+          id: true;
+          name: true;
+          description: true;
+          imageUrl: true;
+          price: true;
+          rating: true;
+          popularity: true;
+          isAvailable: true;
+          restaurant: { select: { id: true; name: true; imageUrl: true; cuisineType: true; isAvailable: true } };
+          category: { select: { id: true; name: true } };
+        }
+      }
+    }
+  }>;
+
+  const formattedFavorites = favorites.map((fav: FavoritePayload) => ({
     id: fav.id,
     createdAt: fav.createdAt,
     food: {

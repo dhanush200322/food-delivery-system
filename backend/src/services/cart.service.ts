@@ -1,4 +1,5 @@
 import prisma from '../lib/prisma';
+import { Prisma } from '@prisma/client';
 
 export const getCart = async (userId: string) => {
   const cart = await prisma.cart.findUnique({
@@ -32,7 +33,18 @@ export const getCart = async (userId: string) => {
     
   let itemCount = 0;
 
-  const formattedItems = cart.cartItems.map((item) => {
+  type CartItemPayload = Prisma.CartItemGetPayload<{
+    include: {
+      food: {
+        include: {
+          restaurant: { select: { id: true, name: true } },
+          category: { select: { id: true, name: true } }
+        }
+      }
+    }
+  }>;
+
+  const formattedItems = cart.cartItems.map((item: CartItemPayload) => {
     const subtotal = item.food.price.mul(item.quantity);
     cartSubtotal = (cartSubtotal as any).add(subtotal);
     itemCount += item.quantity;

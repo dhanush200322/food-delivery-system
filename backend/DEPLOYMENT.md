@@ -20,7 +20,7 @@ You must configure the following environment variables in your Render Web Servic
 When setting up the Web Service on Render, use the following configuration:
 
 - **Root Directory**: `backend`
-- **Build Command**: `npm install && npm run build`
+- **Build Command**: `npm install && npx prisma generate && npm run build && npx prisma migrate deploy`
 - **Start Command**: `npm start`
 
 ## 4. Prisma Generation & Database Migrations
@@ -34,7 +34,7 @@ npx prisma migrate deploy
 ```
 This can be added to the Build Command, e.g.:
 ```bash
-npm install && npm run build && npx prisma migrate deploy
+npm install && npx prisma generate && npm run build && npx prisma migrate deploy
 ```
 
 ## 5. CORS Configuration

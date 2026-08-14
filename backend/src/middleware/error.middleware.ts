@@ -1,19 +1,28 @@
 import { Request, Response, NextFunction } from 'express';
 import { sendError } from '../utils/response';
+import { Prisma } from '@prisma/client';
 
-// Global error handler
-export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error('[Error]:', err.message || err);
+export const errorHandler = (
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  console.error('Error:', err);
 
-  const statusCode = err.statusCode || 500;
-  let message = err.message || 'Internal Server Error';
-
-  // Sanitize 500 error messages so Prisma stack traces or internals do not leak to the client
-  if (statusCode === 500) {
-    message = 'Internal Server Error';
+  if (err instanceof Prisma.PrismaClientKnownRequestError) {
+    if (err.code === 'P2002') {
+      return sendError(res, 'A record with this value already exists', [], 409);
+    }
   }
 
-  return sendError(res, message, [], statusCode);
+  // Temporary debug: return full error message
+  return res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message || 'Internal Server Error',
+    stack: err.stack,
+    errors: []
+  });
 };
 
 // 404 handler

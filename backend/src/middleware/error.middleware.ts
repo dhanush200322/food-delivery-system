@@ -16,11 +16,11 @@ export const errorHandler = (
     }
   }
 
-  // Temporary debug: return full error message
+  const isProduction = process.env.NODE_ENV === 'production';
+
   return res.status(err.statusCode || 500).json({
     success: false,
-    message: err.message || 'Internal Server Error',
-    stack: err.stack,
+    message: isProduction && (err.statusCode === 500 || !err.statusCode) ? 'Internal Server Error' : err.message || 'Internal Server Error',
     errors: []
   });
 };

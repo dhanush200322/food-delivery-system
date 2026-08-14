@@ -1,5 +1,5 @@
 import prisma from '../lib/prisma';
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 
 export const getFavorites = async (userId: string) => {
   const favorites = await prisma.favorite.findMany({

@@ -20,6 +20,11 @@ export default function LoginPage() {
   const { login } = useAuth();
   const router = useRouter();
 
+  // Wake up the backend while the user is typing their credentials
+  useEffect(() => {
+    fetchApi("/health").catch(() => {});
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -55,11 +60,10 @@ export default function LoginPage() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-        <div className="absolute bottom-12 left-12 right-12 text-white">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        <div className="absolute bottom-12 left-12 right-12 text-white drop-shadow-md">
           <h2 className="text-4xl font-bold mb-4">Your next favorite meal is waiting.</h2>
-          <p className="text-lg text-white/80">Log in to track your orders, save your favorite restaurants, and discover new cravings.</p>
+          <p className="text-lg text-white/90 font-medium">Log in to track your orders, save your favorite restaurants, and discover new cravings.</p>
         </div>
       </div>
 

@@ -22,6 +22,11 @@ export default function RegisterPage() {
   const { login } = useAuth();
   const router = useRouter();
 
+  // Wake up the backend while the user is typing their credentials
+  useEffect(() => {
+    fetchApi("/health").catch(() => {});
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -30,7 +35,7 @@ export default function RegisterPage() {
     try {
       const response = await fetchApi<ApiResponse<AuthResponse>>("/api/auth/register", {
         method: "POST",
-        body: JSON.stringify({ name, email, phone, password }),
+        body: JSON.stringify({ email, password, name }),
       });
       
       login(response.data);
@@ -47,21 +52,20 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-row-reverse">
+    <div className="min-h-screen flex">
       {/* Left side - Image */}
       <div className="hidden lg:block lg:w-1/2 relative bg-muted">
         <Image
-          src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1200&h=1600&fit=crop"
-          alt="Healthy fresh food"
+          src="https://images.unsplash.com/photo-1490818387583-1b5f2220974b?w=1200&h=1600&fit=crop"
+          alt="Fresh ingredients"
           fill
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-        <div className="absolute bottom-12 left-12 right-12 text-white">
-          <h2 className="text-4xl font-bold mb-4">Join the feast.</h2>
-          <p className="text-lg text-white/80">Create an account to start ordering from top restaurants in your area.</p>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        <div className="absolute bottom-12 left-12 right-12 text-white drop-shadow-md">
+          <h2 className="text-4xl font-bold mb-4">Join the food revolution.</h2>
+          <p className="text-lg text-white/90 font-medium">Create an account to get exclusive deals, save your favorite meals, and experience lightning-fast delivery.</p>
         </div>
       </div>
 

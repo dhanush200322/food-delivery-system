@@ -15,9 +15,9 @@ export class ApiError extends Error {
 export async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
   
-  // Set up a custom timeout (default 60s) to handle extreme cold starts on Render free tier
+  // Set up a custom timeout (default 120s) to handle extreme cold starts on Render free tier
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 60000);
+  const timeoutId = setTimeout(() => controller.abort(), 120000);
   
   const token = getToken();
   

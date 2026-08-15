@@ -1,5 +1,7 @@
 # Food Delivery System
 
+![Food Delivery System](docs/screenshots/hero.png)
+
 A production-ready full-stack food delivery platform built with modern web technologies. This application provides a seamless, dynamic user experience for discovering restaurants, browsing menus, managing a cart, and processing checkouts.
 
 ## Live Demo

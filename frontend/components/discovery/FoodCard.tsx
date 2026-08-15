@@ -90,75 +90,76 @@ export function FoodCard({ food, index = 0 }: FoodCardProps) {
       transition={{ duration: 0.4, delay: index * 0.05 }}
       className="group relative h-full"
     >
-      <Link href={`/foods/${food.id}`} className="block h-full">
-        <div className="bg-card text-card-foreground rounded-3xl p-4 sm:p-6 shadow-sm border border-border/50 h-full flex flex-col transition-all duration-300 hover:shadow-md hover:border-primary/20 relative overflow-hidden">
+      <Link href={`/foods/${food.id}`} className="block h-full outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl">
+        <div className="bg-card text-card-foreground rounded-2xl shadow-sm border border-border/50 h-full flex flex-col transition-all duration-300 hover:shadow-md hover:border-primary/30 relative overflow-hidden group/card">
           
-          {/* Subtle gradient background on hover */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          {/* Edge-to-edge Image Section */}
+          <div className="relative h-48 w-full bg-secondary overflow-hidden">
+            <Image
+              src={getFoodImage(food)}
+              alt={food.name}
+              fill
+              className="object-cover transition-transform duration-700 group-hover/card:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+            {/* Gradient overlay for better text/badge visibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
 
-          {/* Top meta data (Rating / Availability) */}
-          <div className="flex justify-between items-start mb-6 z-10">
-            {food.restaurant?.rating ? (
-              <div className="flex items-center gap-1 bg-background/80 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm">
-                <Star className="fill-yellow-400 text-yellow-400" size={14} />
-                <span className="text-sm font-bold">{food.restaurant.rating}</span>
+            {/* Badges Overlay */}
+            <div className="absolute top-3 left-3 right-3 flex justify-between items-start z-10">
+              <div className="flex flex-col gap-2">
+                {food.restaurant?.rating ? (
+                  <div className="flex items-center gap-1 bg-background/95 backdrop-blur-sm px-2.5 py-1 rounded-lg shadow-sm">
+                    <Star className="fill-yellow-400 text-yellow-400" size={14} />
+                    <span className="text-xs font-bold">{food.restaurant.rating}</span>
+                  </div>
+                ) : (
+                  <div />
+                )}
+                
+                {!food.isAvailable && (
+                  <div className="bg-destructive text-destructive-foreground text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-lg shadow-sm">
+                    Sold Out
+                  </div>
+                )}
               </div>
-            ) : (
-              <div />
-            )}
-            
-            {!food.isAvailable && (
-              <div className="bg-destructive/10 text-destructive text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-md">
-                Sold Out
-              </div>
-            )}
-            
-            {food.isAvailable && (
-              <button
-                onClick={handleToggleFavorite}
-                disabled={isTogglingFav || favLoading}
-                aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
-                className="z-20 h-8 w-8 bg-background/80 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-background transition-colors text-muted-foreground hover:text-red-500"
-              >
-                <Heart 
-                  size={16} 
-                  className={`transition-colors ${favorited ? "fill-red-500 text-red-500" : ""}`} 
-                />
-              </button>
-            )}
-          </div>
-
-          {/* Image */}
-          <div className="relative h-40 w-full mb-6 drop-shadow-xl flex justify-center z-10">
-            <div className="relative h-40 w-40 rounded-full overflow-hidden border-4 border-background bg-secondary transition-transform duration-500 group-hover:scale-105 group-hover:rotate-3">
-              <Image
-                src={getFoodImage(food)}
-                alt={food.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 160px, 160px"
-              />
+              
+              {food.isAvailable && (
+                <button
+                  onClick={handleToggleFavorite}
+                  disabled={isTogglingFav || favLoading}
+                  aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
+                  className="h-8 w-8 bg-background/95 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-background transition-colors text-muted-foreground hover:text-red-500 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <Heart 
+                    size={16} 
+                    className={`transition-colors ${favorited ? "fill-red-500 text-red-500" : ""}`} 
+                  />
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Content */}
-          <div className="flex-1 flex flex-col z-10">
-            <h3 className="font-bold text-lg md:text-xl mb-1 line-clamp-1 group-hover:text-primary transition-colors">
-              {food.name}
-            </h3>
+          {/* Content Section */}
+          <div className="p-4 sm:p-5 flex-1 flex flex-col z-10">
+            <div className="flex justify-between items-start gap-2 mb-1">
+              <h3 className="font-bold text-lg leading-tight line-clamp-1 group-hover/card:text-primary transition-colors">
+                {food.name}
+              </h3>
+            </div>
             
             {food.restaurant && (
-              <p className="text-sm text-muted-foreground mb-3 font-medium line-clamp-1">
-                by {food.restaurant.name}
+              <p className="text-sm text-muted-foreground mb-2 font-medium line-clamp-1">
+                {food.restaurant.name}
               </p>
             )}
             
-            <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
+            <p className="text-muted-foreground text-sm line-clamp-2 mb-4 mt-1">
               {food.description}
             </p>
             
-            <div className="mt-auto flex items-center justify-between pt-4 border-t border-border/50">
-              <span className="text-xl font-extrabold">${Number(food.price).toFixed(2)}</span>
+            <div className="mt-auto flex items-center justify-between pt-4 border-t border-border/40">
+              <span className="text-lg font-extrabold">${Number(food.price).toFixed(2)}</span>
               
               {/* Add to Cart button or Quantity Selector */}
               {cartItem ? (
@@ -186,14 +187,20 @@ export function FoodCard({ food, index = 0 }: FoodCardProps) {
                 <button 
                   onClick={handleAddToCart}
                   disabled={!food.isAvailable || isAdding}
-                  className={`z-20 h-10 w-10 rounded-full flex items-center justify-center transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+                  className={`z-20 h-10 px-4 rounded-full flex items-center justify-center gap-2 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 font-medium text-sm ${
                     food.isAvailable 
-                      ? "bg-foreground text-background hover:bg-primary hover:text-primary-foreground hover:scale-110 active:scale-95" 
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-md active:scale-95" 
                       : "bg-muted text-muted-foreground cursor-not-allowed"
                   }`}
                   aria-label={food.isAvailable ? "Add to cart" : "Sold out"}
                 >
-                  {isAdding ? <Loader2 size={18} className="animate-spin" /> : <Plus size={20} />}
+                  {isAdding ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <>
+                      <Plus size={16} /> Add
+                    </>
+                  )}
                 </button>
               )}
             </div>
